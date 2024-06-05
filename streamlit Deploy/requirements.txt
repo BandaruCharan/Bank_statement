@@ -1,0 +1,4 @@
+ocr_nanonets_wrapper==1.1
+pandas==2.0.3
+Requests==2.32.3
+streamlit==1.28.0
