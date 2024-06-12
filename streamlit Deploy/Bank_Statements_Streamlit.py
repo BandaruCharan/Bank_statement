@@ -2,13 +2,18 @@ import streamlit as st
 import pandas as pd
 from nanonets import NANONETSOCR
 from requests.exceptions import RequestException
+import tempfile
 
 # Function to extract tables from PDF/Image and return JSON object
-def extract_tables(input_file_path):
+def extract_tables(uploaded_file):
     model = NANONETSOCR()
     model.set_token('aa246456-fbf3-11ee-8c42-52317942933f')
     try:
-        tables_json = model.convert_to_tables(file_path=input_file_path)
+        with tempfile.NamedTemporaryFile(delete=False, suffix=".pdf") as tmp_file:
+            tmp_file.write(uploaded_file.read())
+            tmp_file_path = tmp_file.name
+
+        tables_json = model.convert_to_tables(file_path=tmp_file_path)
         return tables_json
     except RequestException as e:
         st.error(f"Error occurred during table extraction: {e}")
@@ -19,14 +24,14 @@ def extract_tabular_data(json_data):
     dfs = []
 
     # Iterate over each table in the JSON data
-    for table in json_data:
+    for table in json_data[-1]['prediction']:
         # Extract table cells
-        table_data = table['prediction'][-1]['cells']
+        table_data = table['cells']
 
-        # Determine the maximum number of columns in the table
+        # Determine the number of columns dynamically
         max_col = max(cell['col'] for cell in table_data)
 
-        # Initialize a DataFrame to store the tabular data with the determined number of columns
+        # Initialize a DataFrame to store the tabular data
         df = pd.DataFrame(columns=range(1, max_col + 1))
 
         # Iterate over each cell and insert data into DataFrame
@@ -39,7 +44,6 @@ def extract_tabular_data(json_data):
         dfs.append(df)
 
     return dfs
-
 
 def main():
     st.title("Bank Transactions Extraction")
@@ -64,7 +68,7 @@ def main():
     if st.button("Extract"):
         if uploaded_file is not None:
             # Extract tables from uploaded file
-            tables_json = extract_tables(uploaded_file.name)
+            tables_json = extract_tables(uploaded_file)
             
             # Extract tabular data from JSON and display as DataFrame
             if tables_json:
