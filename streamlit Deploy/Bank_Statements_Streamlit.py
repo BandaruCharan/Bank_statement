@@ -63,15 +63,14 @@ def main():
     # Extract button
     if st.button("Extract"):
         if uploaded_file is not None:
-            # Extract tables from uploaded file
-            tables_json = extract_tables(uploaded_file.name)
-            
+            # Extract tables from uploaded file using file-like object
+            tables_json = extract_tables(uploaded_file)
+
             # Extract tabular data from JSON and display as DataFrame
             if tables_json:
                 st.header("Transaction Details : ")
                 tabular_data = extract_tabular_data(tables_json)
                 for idx, df in enumerate(tabular_data, start=1):
-                    #st.subheader(f"Table {idx}")
                     st.write(df)
 
 if __name__ == "__main__":
