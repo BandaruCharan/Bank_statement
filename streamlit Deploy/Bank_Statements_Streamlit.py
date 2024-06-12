@@ -63,15 +63,28 @@ def main():
     # Extract button
     if st.button("Extract"):
         if uploaded_file is not None:
-            # Extract tables from uploaded file using file-like object
-            tables_json = extract_tables(uploaded_file)
+            st.write(f"Uploaded file: {uploaded_file.name}")
+            try:
+                # Save the uploaded file to a temporary file
+                with tempfile.NamedTemporaryFile(delete=False) as tmp_file:
+                    tmp_file.write(uploaded_file.read())
+                    tmp_file_path = tmp_file.name
+                
+                # Extract tables from the temporary file
+                tables_json = extract_tables(tmp_file_path)
+                st.write("Extraction successful")
 
-            # Extract tabular data from JSON and display as DataFrame
-            if tables_json:
-                st.header("Transaction Details : ")
-                tabular_data = extract_tabular_data(tables_json)
-                for idx, df in enumerate(tabular_data, start=1):
-                    st.write(df)
+                # Clean up the temporary file
+                os.remove(tmp_file_path)
+
+                # Extract tabular data from JSON and display as DataFrame
+                if tables_json:
+                    st.header("Transaction Details : ")
+                    tabular_data = extract_tabular_data(tables_json)
+                    for idx, df in enumerate(tabular_data, start=1):
+                        st.write(df)
+            except Exception as e:
+                st.error(f"Error during extraction: {e}")
 
 if __name__ == "__main__":
     main()
