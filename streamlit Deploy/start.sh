@@ -1,18 +1,17 @@
 #!/bin/bash
 
-# Update packages and install Tesseract
+# Install Tesseract OCR and language data files
 apt-get update && apt-get install -y tesseract-ocr libtesseract-dev
 
-# Verify Tesseract installation
-tesseract -v
+# Set Tesseract data path
+export TESSDATA_PREFIX="/usr/share/tesseract-ocr/"
 
-# Print the PATH for debugging
-echo "Current PATH: $PATH"
+# Verify Tesseract installation (Optional but useful for debugging)
+tesseract --version
+ls $TESSDATA_PREFIX/tessdata/
 
-# List Tesseract binary location
-which tesseract
-
-# Run the Streamlit app
+# Run your Streamlit application
 streamlit run Bank_Statements_Streamlit.py
+
 
 
