@@ -1,0 +1,9 @@
+services:
+  - type: web
+    name: bank-statements-streamlit
+    env: python
+    buildCommand: apt-get update && apt-get install -y tesseract-ocr
+    startCommand: streamlit run Bank_Statements_Streamlit.py
+    envVars:
+      - key: TESSDATA_PREFIX
+        value: /usr/share/tesseract-ocr/
