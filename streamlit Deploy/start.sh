@@ -1,8 +1,10 @@
-# start.sh
 #!/bin/bash
 
-# Install Tesseract
-sudo apt-get update && sudo apt-get install -y tesseract-ocr
+# Install Tesseract OCR
+apt-get update && apt-get install -y tesseract-ocr libtesseract-dev
+
+# Verify Tesseract installation
+tesseract -v
 
 # Run the Streamlit app
 streamlit run Bank_Statements_Streamlit.py
