@@ -2,8 +2,13 @@ services:
   - type: web
     name: bank-statements-streamlit
     env: python
-    buildCommand: apt-get update && apt-get install -y tesseract-ocr
+    buildCommand: |
+      apt-get update
+      apt-get install -y tesseract-ocr
+      apt-get install -y libtesseract-dev
+      apt-get install -y poppler-utils
     startCommand: streamlit run Bank_Statements_Streamlit.py
     envVars:
       - key: TESSDATA_PREFIX
-        value: /usr/share/tesseract-ocr/
+        value: /usr/share/tesseract-ocr/4.00/tessdata/
+
