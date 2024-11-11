@@ -11,6 +11,20 @@ import re
 import json
 import tempfile
 
+
+# Set TESSDATA_PREFIX environment variable
+os.environ["TESSDATA_PREFIX"] = "/usr/share/tesseract-ocr/tessdata"
+st.write(f"TESSDATA_PREFIX is set to: {os.environ.get('TESSDATA_PREFIX')}")
+
+# Check the contents of the tessdata directory for debugging
+tessdata_path = os.environ["TESSDATA_PREFIX"]
+try:
+    st.write("Contents of tessdata directory:")
+    st.write(os.listdir(tessdata_path))
+except Exception as e:
+    st.error(f"Error accessing tessdata directory: {e}")
+
+
 # Custom NANONETSOCR class to handle table extraction
 class CustomNANONETSOCR(NANONETSOCR):
     def set_token(self, api_key):
