@@ -1,19 +1,24 @@
 #!/bin/bash
 
-# Install Tesseract OCR and set up tessdata
-apt-get update && apt-get install -y tesseract-ocr
-wget https://github.com/tesseract-ocr/tessdata/raw/main/eng.traineddata -P /usr/share/tesseract-ocr/tessdata/
+# Exit immediately if a command fails
+set -e
 
+# Update package list and install Tesseract OCR with English language support
+apt-get update && apt-get install -y tesseract-ocr tesseract-ocr-eng
 
-# Verify installation
+# Verify Tesseract installation
 tesseract --version
-ls /usr/share/tesseract-ocr/tessdata/
 
-# Explicitly set the environment variable
+# Check the tessdata directory and list its contents
+ls -l /usr/share/tesseract-ocr/tessdata/
+
+# Explicitly set the TESSDATA_PREFIX environment variable
 export TESSDATA_PREFIX="/usr/share/tesseract-ocr/tessdata"
+echo "TESSDATA_PREFIX is set to: $TESSDATA_PREFIX"
 
-# Start Streamlit
+# Start Streamlit application
 streamlit run Bank_Statements_Streamlit.py
+
 
 
 
