@@ -1,11 +1,15 @@
 #!/bin/bash
 
-# Update package list and install Tesseract OCR
+# Update and install Tesseract
 apt-get update && apt-get install -y tesseract-ocr
 
-# Ensure Python dependencies are installed
-pip install -r requirements.txt
+# Verify Tesseract installation
+tesseract --version
 
-# Start the Streamlit app
+# Export the path for Tesseract data
+export TESSDATA_PREFIX=/usr/share/tesseract-ocr/4.00/tessdata
+
+# Start Streamlit
 streamlit run Bank_Statements_Streamlit.py
+
 
