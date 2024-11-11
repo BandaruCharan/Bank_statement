@@ -4,6 +4,7 @@ import requests
 from nanonets import NANONETSOCR
 from requests.exceptions import RequestException
 from pdf2image import convert_from_path
+from tesserocr import PyTessBaseAPI
 from PIL import Image
 import pytesseract
 import re
@@ -43,7 +44,7 @@ def extract_tables(input_file_path):
             return None
     except RequestException as e:
         st.error(f"Error occurred during table extraction: {e}")
-
+'''
 # Function to extract text from images using pytesseract
 def extract_text_with_pytesseract(images):
     image_content = []
@@ -54,6 +55,21 @@ def extract_text_with_pytesseract(images):
         else:
             raise TypeError("Each item in the list must be a PIL Image object.")
     return image_content
+'''
+
+# Replace pytesseract function with tesserocr
+def extract_text_with_tesserocr(images):
+    image_content = []
+    with PyTessBaseAPI() as api:
+        for image in images:
+            if isinstance(image, Image.Image):
+                api.SetImage(image)
+                text = api.GetUTF8Text()
+                image_content.append(text)
+            else:
+                raise TypeError("Each item in the list must be a PIL Image object.")
+    return image_content
+
 
 # Function to parse the extracted text and convert to JSON
 def parse_bank_statement(text):
@@ -203,8 +219,12 @@ def main():
                 tmp_file_path = tmp_file.name
 
             images = convert_from_path(tmp_file_path)
-            text_with_pytesseract = extract_text_with_pytesseract(images)
-            text = " ".join(text_with_pytesseract)
+            #text_with_pytesseract = extract_text_with_pytesseract(images)
+            #text = " ".join(text_with_pytesseract)
+            
+            text_with_tesserocr = extract_text_with_tesserocr(images)
+            text = " ".join(text_with_tesserocr)
+            
             json_output = parse_bank_statement(text)
             json_str = json.dumps(json_output, indent=4)
 
