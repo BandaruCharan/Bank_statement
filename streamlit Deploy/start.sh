@@ -1,7 +1,5 @@
 #!/bin/bash
 
-# Exit immediately if a command fails
-set -e
 
 # Run package installation with elevated permissions
 apt-get update && apt-get install -y tesseract-ocr tesseract-ocr-eng
