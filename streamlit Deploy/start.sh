@@ -1,19 +1,11 @@
 #!/bin/bash
 
-# Update package lists
-apt-get update
+# Update package list and install Tesseract OCR
+apt-get update && apt-get install -y tesseract-ocr
 
-# Install Tesseract and Leptonica
-apt-get install -y tesseract-ocr libtesseract-dev libleptonica-dev
+# Ensure Python dependencies are installed
+pip install -r requirements.txt
 
-# Export necessary environment variables
-export TESSDATA_PREFIX="/usr/share/tesseract-ocr/"
-export PATH="$PATH:/usr/bin"
-
-# Verify Tesseract installation (Optional but useful for debugging)
-tesseract --version
-echo "Tesseract path: $(which tesseract)"
-ls $TESSDATA_PREFIX/tessdata/
-
-# Run your Streamlit application
+# Start the Streamlit app
 streamlit run Bank_Statements_Streamlit.py
+
